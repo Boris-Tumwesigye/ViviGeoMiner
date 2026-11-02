@@ -1,1 +1,382 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Use the ViviGeoMiner Mineral Identifier to explore possible mineral matches using photographs and physical characteristics.">
+  <title>Mineral Identifier | ViviGeoMiner</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6f3;
+      color: #24332d;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #102b26;
+      color: white;
+      text-align: center;
+      padding: 24px 15px;
+      border-bottom: 4px solid #d5a52b;
+    }
+
+    header h1 {
+      color: #e5b83f;
+      margin: 0;
+    }
+
+    nav {
+      background: #17463a;
+      padding: 12px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: auto;
+      padding: 20px 15px;
+    }
+
+    .panel {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #bdc9c1;
+      border-radius: 7px;
+      font-size: 16px;
+      background: white;
+    }
+
+    button {
+      background: #17463a;
+      color: white;
+      border: none;
+      padding: 13px 18px;
+      border-radius: 7px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #102b26;
+    }
+
+    #preview {
+      display: none;
+      max-width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      margin-top: 15px;
+      border-radius: 9px;
+    }
+
+    #results {
+      display: none;
+      background: #edf4ef;
+      border-left: 5px solid #d5a52b;
+      padding: 18px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .result-item {
+      background: white;
+      padding: 12px;
+      border-radius: 7px;
+      margin: 10px 0;
+    }
+
+    .notice {
+      background: #fff5d9;
+      padding: 15px;
+      border-left: 5px solid #d5a52b;
+      border-radius: 8px;
+    }
+
+    .back-link {
+      display: inline-block;
+      background: #17463a;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 7px;
+      text-decoration: none;
+      margin-top: 15px;
+    }
+
+    footer {
+      background: #102b26;
+      color: white;
+      text-align: center;
+      padding: 18px;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>💎 ViviGeoMiner</h1>
+  <p>Discover. Identify. Explore.</p>
+  <p>Mineral Identification Tool</p>
+</header>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="minerals.html">Minerals</a>
+  <a href="identify.html">Identify</a>
+</nav>
+
+<main class="container">
+
+  <section class="panel">
+    <h2>Explore Your Mineral Sample</h2>
+    <p>
+      Upload a photograph and describe the visible physical
+      characteristics of your rock or mineral. The tool will
+      suggest possible matches for educational purposes.
+    </p>
+
+    <form id="identifyForm">
+
+      <label for="mineralPhoto">Take or upload a photograph</label>
+      <input
+        type="file"
+        id="mineralPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+      <img id="preview" alt="Mineral sample preview">
+
+      <label for="colour">What is the main colour?</label>
+      <select id="colour" required>
+        <option value="">Select colour</option>
+        <option value="yellow">Yellow or golden</option>
+        <option value="brassy">Brassy yellow</option>
+        <option value="reddish">Reddish brown</option>
+        <option value="black">Black or dark grey</option>
+        <option value="white">White or colourless</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="purple">Purple</option>
+        <option value="other">Other or mixed colours</option>
+      </select>
+
+      <label for="lustre">How does the surface reflect light?</label>
+      <select id="lustre" required>
+        <option value="">Select appearance</option>
+        <option value="metallic">Metallic and shiny</option>
+        <option value="glassy">Glassy</option>
+        <option value="dull">Dull or earthy</option>
+        <option value="pearly">Pearly</option>
+        <option value="other">Other or uncertain</option>
+      </select>
+
+      <label for="hardness">How hard does the sample appear?</label>
+      <select id="hardness" required>
+        <option value="">Select an observation</option>
+        <option value="soft">Appears soft or easily scratched</option>
+        <option value="medium">Moderately hard</option>
+        <option value="hard">Very hard</option>
+        <option value="unknown">Not tested or unknown</option>
+      </select>
+
+      <label for="magnetism">Does a magnet attract it?</label>
+      <select id="magnetism" required>
+        <option value="">Select observation</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+        <option value="unknown">Not tested</option>
+      </select>
+
+      <label for="location">Where was the sample found?</label>
+      <input
+        type="text"
+        id="location"
+        placeholder="Example: Juba, South Sudan"
+      >
+
+      <label for="notes">Additional observations</label>
+      <textarea
+        id="notes"
+        rows="3"
+        placeholder="Describe its shape, weight, crystals or other visible features..."
+      ></textarea>
+
+      <button type="submit">Explore Possible Matches</button>
+
+    </form>
+  </section>
+
+  <section id="results">
+    <h2>Possible Mineral Matches</h2>
+    <p>
+      These suggestions are based only on the characteristics
+      you entered.
+    </p>
+    <div id="matchList"></div>
+    <p>
+      More observations and professional testing may be needed
+      to narrow down the possibilities.
+    </p>
+  </section>
+
+  <section class="notice">
+    <h3>Scientific and Safety Disclaimer</h3>
+    <p>
+      This is an educational screening tool, not an AI image
+      recognition system or laboratory test. It does not analyse
+      the photograph to identify mineral composition.
+    </p>
+    <p>
+      Do not taste, inhale, grind or handle unknown samples
+      carelessly. Avoid scratch or acid tests unless you have
+      appropriate training and safety equipment.
+    </p>
+  </section>
+
+  <a class="back-link" href="index.html">← Back to Home</a>
+
+</main>
+
+<footer>
+  <p>© 2026 ViviGeoMiner</p>
+  <p>Discover. Identify. Explore.</p>
+</footer>
+
+<script>
+  const photoInput = document.getElementById("mineralPhoto");
+  const preview = document.getElementById("preview");
+  const form = document.getElementById("identifyForm");
+  const results = document.getElementById("results");
+  const matchList = document.getElementById("matchList");
+
+  photoInput.addEventListener("change", function () {
+    const file = photoInput.files[0];
+
+    if (!file) {
+      preview.style.display = "none";
+      preview.removeAttribute("src");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      photoInput.value = "";
+      preview.style.display = "none";
+      return;
+    }
+
+    const imageUrl = URL.createObjectURL(file);
+    preview.src = imageUrl;
+    preview.style.display = "block";
+  });
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const colour = document.getElementById("colour").value;
+    const lustre = document.getElementById("lustre").value;
+    const hardness = document.getElementById("hardness").value;
+    const magnetism = document.getElementById("magnetism").value;
+
+    let matches = [];
+
+    function addMatch(name, reason) {
+      matches.push({ name, reason });
+    }
+
+    if (colour === "yellow" && lustre === "metallic") {
+      addMatch("Native gold", "Gold can have a yellow metallic appearance. Density and malleability need further assessment.");
+    }
+
+    if (colour === "brassy" && lustre === "metallic") {
+      addMatch("Pyrite or chalcopyrite", "These sulphide minerals can have a brassy metallic appearance.");
+    }
+
+    if (colour === "black" && magnetism === "yes") {
+      addMatch("Magnetite", "Magnetite is commonly black and strongly magnetic.");
+    }
+
+    if (colour === "reddish" || (colour === "black" && magnetism === "no")) {
+      addMatch("Hematite", "Hematite can be reddish-brown, dark grey or metallic-looking and is not strongly magnetic.");
+    }
+
+    if (colour === "white" && lustre === "glassy" && hardness === "hard") {
+      addMatch("Quartz", "Quartz is commonly colourless or white, glassy and relatively hard.");
+    }
+
+    if (colour === "green" || colour === "blue") {
+      addMatch("Copper-bearing minerals", "Some copper minerals have green or blue colours, but many other minerals do too.");
+    }
+
+    if (colour === "white" && lustre === "dull") {
+      addMatch("Calcite", "Calcite can occur in white or colourless forms and is a common component of limestone.");
+    }
+
+    if (colour === "purple") {
+      addMatch("Amethyst or other purple minerals", "Amethyst is a purple variety of quartz, but colour alone is not diagnostic.");
+    }
+
+    if (matches.length === 0) {
+      addMatch("More information needed", "The entered characteristics do not point to a useful preliminary match. Additional observations or laboratory analysis may help.");
+    }
+
+    matchList.innerHTML = "";
+
+    matches.forEach(function (match) {
+      const item = document.createElement("div");
+      item.className = "result-item";
+
+      const heading = document.createElement("h3");
+      heading.textContent = match.name;
+
+      const description = document.createElement("p");
+      description.textContent = match.reason;
+
+      item.appendChild(heading);
+      item.appendChild(description);
+      matchList.appendChild(item);
+    });
+
+    results.style.display = "block";
+    results.scrollIntoView({ behavior: "smooth" });
+  });
+</script>
+
+</body>
+</html>
+
