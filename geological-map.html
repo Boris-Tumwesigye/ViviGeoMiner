@@ -1,1 +1,476 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Record geological sample locations and field observations with ViviGeoMiner GPS tools.">
+  <title>Geological GPS Map | ViviGeoMiner</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6f3;
+      color: #24332d;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #102b26;
+      color: white;
+      text-align: center;
+      padding: 24px 15px;
+      border-bottom: 4px solid #d5a52b;
+    }
+
+    header h1 {
+      color: #e5b83f;
+      margin: 0;
+    }
+
+    nav {
+      background: #17463a;
+      padding: 12px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px 15px;
+    }
+
+    .panel {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 6px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #bdc9c1;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #17463a;
+      color: white;
+      border: none;
+      padding: 13px 18px;
+      border-radius: 7px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #102b26;
+    }
+
+    .secondary {
+      background: #536b60;
+    }
+
+    .coordinates {
+      background: #edf4ef;
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    .sample-card {
+      border: 1px solid #d8e0da;
+      border-left: 5px solid #d5a52b;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 14px;
+      background: #fff;
+    }
+
+    .sample-card h3 {
+      color: #17463a;
+      margin-top: 0;
+    }
+
+    .map-link {
+      display: inline-block;
+      color: #17463a;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .delete-button {
+      background: #a33232;
+      padding: 9px;
+      font-size: 14px;
+    }
+
+    .notice {
+      background: #fff5d9;
+      border-left: 5px solid #d5a52b;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .back-link {
+      display: inline-block;
+      background: #17463a;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 7px;
+      text-decoration: none;
+      margin-top: 15px;
+    }
+
+    footer {
+      background: #102b26;
+      color: white;
+      text-align: center;
+      padding: 18px;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>💎 ViviGeoMiner</h1>
+  <p>Discover. Identify. Explore.</p>
+  <p>Geological GPS Field Map</p>
+</header>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="minerals.html">Minerals</a>
+  <a href="identify.html">Identify</a>
+</nav>
+
+<main class="container">
+
+  <section class="panel">
+    <h2>Record a Geological Location</h2>
+
+    <p>
+      Use your phone's GPS to record the location of a rock,
+      mineral sample or geological observation.
+    </p>
+
+    <button type="button" id="getLocation">
+      📍 Get My Current GPS Location
+    </button>
+
+    <div class="coordinates" id="coordinateStatus">
+      GPS coordinates have not been captured yet.
+    </div>
+
+    <form id="sampleForm">
+
+      <label for="sampleName">Sample or mineral name</label>
+      <input
+        type="text"
+        id="sampleName"
+        placeholder="Example: Possible quartz sample"
+        required
+      >
+
+      <label for="sampleLocation">Location description</label>
+      <input
+        type="text"
+        id="sampleLocation"
+        placeholder="Example: Near Juba, South Sudan"
+      >
+
+      <label for="observations">Field observations</label>
+      <textarea
+        id="observations"
+        rows="4"
+        placeholder="Describe the colour, appearance, surrounding rocks and other observations..."
+      ></textarea>
+
+      <button type="submit">Save Geological Record</button>
+
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>My Geological Records</h2>
+    <p>Saved field observations on this device:</p>
+
+    <div id="sampleList">
+      No geological records saved yet.
+    </div>
+  </section>
+
+  <section class="notice">
+    <h3>Important GPS and Geological Information</h3>
+    <p>
+      GPS records the approximate location of your observation.
+      It does not detect underground minerals or prove that an
+      economically valuable deposit exists.
+    </p>
+    <p>
+      Location access requires your permission. GPS accuracy
+      depends on your phone, surroundings and satellite reception.
+      Never enter private land without the required permission.
+    </p>
+    <p>
+      Your records are saved locally in this browser on this device.
+      They are not automatically uploaded or backed up online.
+    </p>
+  </section>
+
+  <a class="back-link" href="index.html">← Back to Home</a>
+
+</main>
+
+<footer>
+  <p>© 2026 ViviGeoMiner</p>
+  <p>Discover. Identify. Explore.</p>
+</footer>
+
+<script>
+  let currentLatitude = null;
+  let currentLongitude = null;
+
+  const getLocationButton = document.getElementById("getLocation");
+  const coordinateStatus = document.getElementById("coordinateStatus");
+  const sampleForm = document.getElementById("sampleForm");
+  const sampleList = document.getElementById("sampleList");
+
+  let records = [];
+
+  try {
+    records = JSON.parse(
+      localStorage.getItem("vivigeominerRecords") || "[]"
+    );
+
+    if (!Array.isArray(records)) {
+      records = [];
+    }
+  } catch (error) {
+    records = [];
+  }
+
+  getLocationButton.addEventListener("click", function () {
+
+    if (!navigator.geolocation) {
+      coordinateStatus.textContent =
+        "GPS location is not supported by this browser.";
+      return;
+    }
+
+    coordinateStatus.textContent =
+      "Requesting GPS location. Please allow location access.";
+
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+
+        currentLatitude = position.coords.latitude;
+        currentLongitude = position.coords.longitude;
+
+        coordinateStatus.textContent =
+          "Latitude: " + currentLatitude.toFixed(6) +
+          " | Longitude: " + currentLongitude.toFixed(6) +
+          " | Accuracy: approximately " +
+          Math.round(position.coords.accuracy) + " metres.";
+
+      },
+
+      function (error) {
+
+        const messages = {
+          1: "Location permission was denied. Please allow location access.",
+          2: "Your GPS position is unavailable. Try again outdoors.",
+          3: "The GPS request timed out. Please try again."
+        };
+
+        coordinateStatus.textContent =
+          messages[error.code] ||
+          "Unable to obtain GPS location.";
+
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 0
+      }
+    );
+
+  });
+
+  sampleForm.addEventListener("submit", function (event) {
+
+    event.preventDefault();
+
+    if (
+      currentLatitude === null ||
+      currentLongitude === null
+    ) {
+      alert("Please capture your GPS location before saving.");
+      return;
+    }
+
+    const record = {
+      id: Date.now(),
+      name: document.getElementById("sampleName").value.trim(),
+      location: document.getElementById("sampleLocation").value.trim(),
+      observations: document.getElementById("observations").value.trim(),
+      latitude: currentLatitude,
+      longitude: currentLongitude,
+      date: new Date().toLocaleString()
+    };
+
+    records.push(record);
+
+    try {
+      localStorage.setItem(
+        "vivigeominerRecords",
+        JSON.stringify(records)
+      );
+    } catch (error) {
+      alert("Unable to save the record. Device storage may be full or unavailable.");
+      records.pop();
+      return;
+    }
+
+    sampleForm.reset();
+
+    currentLatitude = null;
+    currentLongitude = null;
+
+    coordinateStatus.textContent =
+      "Record saved. Capture a new GPS location for your next sample.";
+
+    displayRecords();
+
+    alert("Geological record saved successfully!");
+
+  });
+
+  function displayRecords() {
+
+    sampleList.innerHTML = "";
+
+    if (records.length === 0) {
+      sampleList.textContent =
+        "No geological records saved yet.";
+      return;
+    }
+
+    records.forEach(function (record) {
+
+      const card = document.createElement("div");
+      card.className = "sample-card";
+
+      const heading = document.createElement("h3");
+      heading.textContent = record.name;
+
+      const location = document.createElement("p");
+      location.textContent =
+        "Location: " + (record.location || "Not provided");
+
+      const coordinates = document.createElement("p");
+      coordinates.textContent =
+        "Coordinates: " +
+        record.latitude + ", " + record.longitude;
+
+      const observations = document.createElement("p");
+      observations.textContent =
+        "Observations: " +
+        (record.observations || "None provided");
+
+      const date = document.createElement("p");
+      date.textContent = "Recorded: " + record.date;
+
+      const mapLink = document.createElement("a");
+      mapLink.className = "map-link";
+      mapLink.href =
+        "https://www.openstreetmap.org/?mlat=" +
+        encodeURIComponent(record.latitude) +
+        "&mlon=" +
+        encodeURIComponent(record.longitude) +
+        "#map=16/" +
+        encodeURIComponent(record.latitude) +
+        "/" +
+        encodeURIComponent(record.longitude);
+
+      mapLink.target = "_blank";
+      mapLink.rel = "noopener noreferrer";
+      mapLink.textContent = "View location on map";
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "delete-button";
+      deleteButton.type = "button";
+      deleteButton.textContent = "Delete Record";
+
+      deleteButton.addEventListener("click", function () {
+
+        if (confirm("Delete this geological record?")) {
+
+          records = records.filter(function (item) {
+            return item.id !== record.id;
+          });
+
+          try {
+            localStorage.setItem(
+              "vivigeominerRecords",
+              JSON.stringify(records)
+            );
+          } catch (error) {
+            alert("Unable to update device storage.");
+            return;
+          }
+
+          displayRecords();
+        }
+
+      });
+
+      card.appendChild(heading);
+      card.appendChild(location);
+      card.appendChild(coordinates);
+      card.appendChild(observations);
+      card.appendChild(date);
+      card.appendChild(mapLink);
+      card.appendChild(deleteButton);
+
+      sampleList.appendChild(card);
+
+    });
+
+  }
+
+  displayRecords();
+</script>
+
+</body>
+</html>
+
