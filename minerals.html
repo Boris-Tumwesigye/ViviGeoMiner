@@ -1,1 +1,334 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore the ViviGeoMiner mineral library. Learn about gold, copper, iron ore, lithium, limestone, zinc, silver and lead.">
+  <title>Mineral Library | ViviGeoMiner</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6f3;
+      color: #24332d;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #102b26;
+      color: white;
+      padding: 24px 16px;
+      text-align: center;
+      border-bottom: 4px solid #d5a52b;
+    }
+
+    header h1 {
+      color: #e5b83f;
+      margin: 0;
+    }
+
+    header p {
+      margin-bottom: 0;
+    }
+
+    nav {
+      background: #17463a;
+      padding: 12px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: auto;
+      padding: 20px 15px;
+    }
+
+    .intro {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      border-left: 5px solid #d5a52b;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #bdc9c1;
+      border-radius: 8px;
+      font-size: 16px;
+      margin: 10px 0 22px;
+    }
+
+    .mineral-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .mineral-card {
+      background: white;
+      border-radius: 12px;
+      padding: 19px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+      border-top: 4px solid #d5a52b;
+    }
+
+    .mineral-card h2 {
+      color: #17463a;
+      margin-top: 0;
+    }
+
+    .mineral-card h3 {
+      font-size: 15px;
+      margin-bottom: 3px;
+      color: #426052;
+    }
+
+    .mineral-card p {
+      margin-top: 3px;
+    }
+
+    .formula {
+      display: inline-block;
+      background: #edf2ed;
+      padding: 5px 9px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .notice {
+      background: #fff5d9;
+      border-left: 5px solid #d5a52b;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 25px;
+    }
+
+    .back-link {
+      display: inline-block;
+      background: #17463a;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 7px;
+      text-decoration: none;
+      margin-top: 18px;
+    }
+
+    footer {
+      background: #102b26;
+      color: white;
+      text-align: center;
+      padding: 18px;
+      margin-top: 30px;
+    }
+
+    #noResults {
+      display: none;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>💎 ViviGeoMiner</h1>
+  <p>Discover. Identify. Explore.</p>
+  <p>Mineral Knowledge Library</p>
+</header>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="minerals.html">Minerals</a>
+</nav>
+
+<main class="container">
+
+  <section class="intro">
+    <h2>Explore the Mineral World</h2>
+    <p>
+      Learn about important minerals, their chemical compositions,
+      physical characteristics, geological occurrences and uses.
+      This library is designed as a learning resource for mineral
+      enthusiasts, students and geological field explorers.
+    </p>
+  </section>
+
+  <label for="mineralSearch"><strong>Search the mineral library</strong></label>
+  <input
+    type="search"
+    id="mineralSearch"
+    class="search-box"
+    placeholder="Search gold, copper, iron ore..."
+  >
+
+  <section class="mineral-grid" id="mineralGrid">
+
+    <article class="mineral-card">
+      <h2>Gold</h2>
+      <span class="formula">Au</span>
+      <h3>Appearance</h3>
+      <p>Usually yellow metallic, soft and highly malleable.</p>
+      <h3>Geological occurrence</h3>
+      <p>Found in quartz veins, hydrothermal deposits and alluvial sediments.</p>
+      <h3>Uses</h3>
+      <p>Jewellery, electronics, dentistry and investment.</p>
+      <h3>Identification clues</h3>
+      <p>Gold is very dense, malleable and does not tarnish easily. Pyrite can look similar but is brittle.</p>
+    </article>
+
+    <article class="mineral-card">
+      <h2>Copper</h2>
+      <span class="formula">Cu</span>
+      <h3>Appearance</h3>
+      <p>Native copper is reddish-brown with a metallic lustre.</p>
+      <h3>Geological occurrence</h3>
+      <p>Occurs in hydrothermal veins and several types of copper ore deposits.</p>
+      <h3>Uses</h3>
+      <p>Electrical wiring, plumbing, electronics and industrial equipment.</p>
+      <h3>Identification clues</h3>
+      <p>Native copper is malleable. Copper minerals may have green, blue, red or brassy colours.</p>
+    </article>
+
+    <article class="mineral-card">
+      <h2>Iron Ore</h2>
+      <span class="formula">Fe₂O₃ / Fe₃O₄</span>
+      <h3>Appearance</h3>
+      <p>Hematite is often reddish-brown to steel-grey. Magnetite is commonly black.</p>
+      <h3>Geological occurrence</h3>
+      <p>Found in banded iron formations, sedimentary deposits and other geological settings.</p>
+      <h3>Uses</h3>
+      <p>Steel production, construction, machinery and manufacturing.</p>
+      <h3>Identification clues</h3>
+      <p>Magnetite is strongly magnetic. Hematite commonly leaves a reddish-brown streak.</p>
+    </article>
+
+    <article class="mineral-card">
+      <h2>Lithium</h2>
+      <span class="formula">Li</span>
+      <h3>Appearance</h3>
+      <p>Lithium occurs in minerals such as spodumene and lepidolite, not usually as native metal.</p>
+      <h3>Geological occurrence</h3>
+      <p>Commonly associated with certain granitic pegmatites and some salt-lake brines.</p>
+      <h3>Uses</h3>
+      <p>Rechargeable batteries, ceramics, glass and specialised industrial products.</p>
+      <h3>Identification clues</h3>
+      <p>Spodumene may occur as elongated crystals. Laboratory analysis is needed to confirm lithium content.</p>
+    </article>
+
+    <article class="mineral-card">
+      <h2>Limestone</h2>
+      <span class="formula">CaCO₃</span>
+      <h3>Appearance</h3>
+      <p>Often white, cream, grey or brown, and may contain visible fossils.</p>
+      <h3>Geological occurrence</h3>
+      <p>Usually forms in sedimentary environments, including marine settings.</p>
+      <h3>Uses</h3>
+      <p>Cement, construction, agriculture and industrial processing.</p>
+      <h3>Identification clues</h3>
+      <p>Calcite-rich limestone commonly reacts with dilute hydrochloric acid by producing bubbles.</p>
+    </article>
+
+    <article class="mineral-card">
+      <h2>Zinc</h2>
+      <span class="formula">Zn</span>
+      <h3>Appearance</h3>
+      <p>Zinc is commonly extracted from sphalerite, which can be brown, black, yellow or reddish.</p>
+      <h3>Geological occurrence</h3>
+      <p>Often occurs in hydrothermal veins and lead-zinc deposits.</p>
+      <h3>Uses</h3>
+      <p>Galvanising steel, batteries, alloys and industrial manufacturing.</p>
+      <h3>Identification clues</h3>
+      <p>Sphalerite can have a resinous lustre and distinctive cleavage. Colour alone cannot confirm zinc.</p>
+    </article>
+
+    <article class="mineral-card">
+      <h2>Silver</h2>
+      <span class="formula">Ag</span>
+      <h3>Appearance</h3>
+      <p>Native silver is usually bright white metallic but can tarnish to grey or black.</p>
+      <h3>Geological occurrence</h3>
+      <p>Occurs in hydrothermal veins and may be associated with lead, copper and gold ores.</p>
+      <h3>Uses</h3>
+      <p>Electronics, solar technology, jewellery and specialised industrial applications.</p>
+      <h3>Identification clues</h3>
+      <p>Silver is highly malleable. Other white metallic minerals may look similar.</p>
+    </article>
+
+    <article class="mineral-card">
+      <h2>Lead</h2>
+      <span class="formula">Pb</span>
+      <h3>Appearance</h3>
+      <p>Lead is commonly obtained from galena, a heavy, metallic, lead-grey mineral.</p>
+      <h3>Geological occurrence</h3>
+      <p>Often found in hydrothermal veins and lead-zinc deposits.</p>
+      <h3>Uses</h3>
+      <p>Lead-acid batteries and specialised industrial applications.</p>
+      <h3>Identification clues</h3>
+      <p>Galena is unusually dense and commonly forms cubic crystals.</p>
+    </article>
+
+  </section>
+
+  <p id="noResults">No matching mineral found. Try another search.</p>
+
+  <section class="notice">
+    <h3>Important Scientific and Safety Note</h3>
+    <p>
+      Appearance alone cannot reliably identify a mineral or establish
+      its economic value. Confirm suspected minerals through appropriate
+      geological testing and qualified laboratory analysis.
+    </p>
+    <p>
+      Never taste, inhale, grind or handle unknown mineral samples
+      carelessly. Some minerals and dusts can be toxic.
+    </p>
+  </section>
+
+  <a class="back-link" href="index.html">← Back to Home</a>
+
+</main>
+
+<footer>
+  <p>© 2026 ViviGeoMiner. Discover. Identify. Explore.</p>
+  <p>Knowledge for responsible mineral exploration.</p>
+</footer>
+
+<script>
+  const searchInput = document.getElementById("mineralSearch");
+  const mineralCards = document.querySelectorAll(".mineral-card");
+  const noResults = document.getElementById("noResults");
+
+  searchInput.addEventListener("input", function () {
+    const query = searchInput.value.toLowerCase().trim();
+    let matches = 0;
+
+    mineralCards.forEach(function (card) {
+      const found = card.innerText.toLowerCase().includes(query);
+      card.style.display = found ? "" : "none";
+      if (found) matches++;
+    });
+
+    noResults.style.display = matches === 0 ? "block" : "none";
+  });
+</script>
+
+</body>
+</html>
+
