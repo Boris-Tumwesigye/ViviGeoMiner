@@ -191,6 +191,85 @@ function displayReports() {
     reportsList.appendChild(card);
   });
 }
+  
+function downloadPDF(report) {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("PDF library could not load. Please check your internet connection.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  let y = 20;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("ViviGeoMiner", 20, y);
+
+  y += 10;
+  doc.setFontSize(13);
+  doc.text("GEOLOGICAL FIELD REPORT", 20, y);
+
+  y += 12;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+
+  const sections = [
+    ["REPORT TITLE", report.title],
+    ["DATE OF VISIT", report.date],
+    ["LOCATION", report.location],
+    ["SAMPLE / MINERAL", report.sample || "Not specified"],
+    ["GPS COORDINATES", report.coordinates || "Not recorded"],
+    ["GEOLOGICAL OBSERVATIONS", report.geology],
+    ["METHODS OR EQUIPMENT", report.methods || "Not specified"],
+    ["PRELIMINARY FINDINGS", report.conclusion || "Not specified"],
+    ["RECOMMENDATIONS", report.recommendations || "Not specified"]
+  ];
+
+  sections.forEach(section => {
+    const heading = section[0];
+    const value = String(section[1] || "Not specified");
+
+    if (y > 260) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFont("helvetica", "bold");
+    doc.text(heading, 20, y);
+    y += 6;
+
+    doc.setFont("helvetica", "normal");
+    const lines = doc.splitTextToSize(value, 170);
+
+    lines.forEach(line => {
+      if (y > 275) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, 20, y);
+      y += 6;
+    });
+
+    y += 5;
+  });
+
+  if (y > 265) {
+    doc.addPage();
+    y = 20;
+  }
+
+  doc.setFontSize(9);
+  doc.text(
+    "Note: Preliminary observations do not confirm mineral composition.",
+    20,
+    y
+  );
+
+  doc.save("ViviGeoMiner-Field-Report.pdf");
+}
+
 
 form.addEventListener("submit", function(event) {
   event.preventDefault();
