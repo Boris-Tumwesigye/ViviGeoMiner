@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field Reports | ViviGeoMiner</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f5f1;
+      color: #172b24;
+    }
+    header {
+      background: #123d2b;
+      color: white;
+      padding: 22px 15px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; color: #f5c542; }
+    nav { margin-top: 14px; }
+    nav a { color: white; margin: 0 8px; }
+    main { max-width: 760px; margin: 22px auto; padding: 15px; }
+    .panel {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px #00000012;
+    }
+    h2 { color: #174d35; }
+    label { display: block; margin-top: 14px; font-weight: bold; }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #bbb;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+    textarea { min-height: 90px; }
+    button {
+      background: #174d35;
+      color: white;
+      border: 0;
+      padding: 12px 17px;
+      margin-top: 16px;
+      border-radius: 7px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button.delete { background: #a52b2b; }
+    .record {
+      border: 1px solid #ddd;
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    .notice { font-size: 14px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #555; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>💎 ViviGeoMiner</h1>
+  <p>Field Reports and Geological Observations</p>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="minerals.html">Minerals</a>
+    <a href="geological-map.html">Geological Map</a>
+  </nav>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Create a Field Report</h2>
+    <p>Document your geological field visits and sample observations.</p>
+
+    <form id="reportForm">
+      <label for="reportTitle">Report title</label>
+      <input id="reportTitle" required placeholder="e.g. Geological survey in Juba">
+
+      <label for="reportDate">Date of visit</label>
+      <input type="date" id="reportDate" required>
+
+      <label for="reportLocation">Location</label>
+      <input id="reportLocation" required placeholder="Town, state, country">
+
+      <label for="sampleType">Sample or mineral observed</label>
+      <input id="sampleType" placeholder="e.g. Quartz rock, iron ore">
+
+      <label for="coordinates">GPS coordinates (optional)</label>
+      <input id="coordinates" placeholder="e.g. 4.8517, 31.5825">
+
+      <label for="geology">Geological observations</label>
+      <textarea id="geology" required placeholder="Describe the rocks, colours, structures and other observations."></textarea>
+
+      <label for="methods">Methods or equipment used</label>
+      <textarea id="methods" placeholder="Describe field tools, sampling or observations."></textarea>
+
+      <label for="conclusion">Preliminary findings</label>
+      <textarea id="conclusion" placeholder="Record your preliminary interpretation and uncertainties."></textarea>
+
+      <label for="recommendations">Recommendations or next actions</label>
+      <textarea id="recommendations" placeholder="Describe suggested follow-up work."></textarea>
+
+      <button type="submit">Save Field Report</button>
+    </form>
+    <p class="notice">Reports are saved in this browser on this device. Export important reports for backup.</p>
+  </section>
+
+  <section class="panel">
+    <h2>My Field Reports</h2>
+    <div id="reportsList">No reports saved yet.</div>
+  </section>
+
+  <p class="notice">
+    Scientific note: Field observations are preliminary. Visual characteristics
+    do not confirm mineral composition or the presence of an economic deposit.
+    Laboratory analysis and qualified geological assessment may be required.
+  </p>
+</main>
+
+<footer>© 2026 ViviGeoMiner | Discover. Identify. Explore.</footer>
+
+<script>
+const STORAGE_KEY = "vivigeominerFieldReports";
+const form = document.getElementById("reportForm");
+const reportsList = document.getElementById("reportsList");
+
+document.getElementById("reportDate").value =
+  new Date().toISOString().split("T")[0];
+
+function getReports() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function displayReports() {
+  const reports = getReports();
+  reportsList.innerHTML = "";
+
+  if (reports.length === 0) {
+    reportsList.textContent = "No reports saved yet.";
+    return;
+  }
+
+  reports.forEach((report, index) => {
+    const card = document.createElement("div");
+    card.className = "record";
+
+    const title = document.createElement("h3");
+    title.textContent = report.title;
+
+    const details = [
+      "Date: " + report.date,
+      "Location: " + report.location,
+      "Sample: " + (report.sample || "Not specified"),
+      "GPS: " + (report.coordinates || "Not recorded"),
+      "Observations: " + report.geology,
+      "Methods: " + (report.methods || "Not specified"),
+      "Preliminary findings: " + (report.conclusion || "Not specified"),
+      "Recommendations: " + (report.recommendations || "Not specified")
+    ];
+
+    card.appendChild(title);
+
+    details.forEach(detail => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = detail;
+      card.appendChild(paragraph);
+    });
+
+    const downloadButton = document.createElement("button");
+    downloadButton.textContent = "Download Report";
+    downloadButton.onclick = () => downloadReport(report, index);
+    card.appendChild(downloadButton);
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete Report";
+    deleteButton.className = "delete";
+    deleteButton.onclick = () => deleteReport(index);
+    card.appendChild(deleteButton);
+
+    reportsList.appendChild(card);
+  });
+}
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const report = {
+    title: document.getElementById("reportTitle").value.trim(),
+    date: document.getElementById("reportDate").value,
+    location: document.getElementById("reportLocation").value.trim(),
+    sample: document.getElementById("sampleType").value.trim(),
+    coordinates: document.getElementById("coordinates").value.trim(),
+    geology: document.getElementById("geology").value.trim(),
+    methods: document.getElementById("methods").value.trim(),
+    conclusion: document.getElementById("conclusion").value.trim(),
+    recommendations: document.getElementById("recommendations").value.trim()
+  };
+
+  const reports = getReports();
+  reports.unshift(report);
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+    form.reset();
+    document.getElementById("reportDate").value =
+      new Date().toISOString().split("T")[0];
+    displayReports();
+    alert("Field report saved successfully.");
+  } catch (error) {
+    alert("Could not save the report. Your browser storage may be full.");
+  }
+});
+
+function downloadReport(report, index) {
+  const content = [
+    "VIVIGEOMINER FIELD REPORT",
+    "========================",
+    "",
+    "Title: " + report.title,
+    "Date: " + report.date,
+    "Location: " + report.location,
+    "Sample: " + report.sample,
+    "GPS coordinates: " + report.coordinates,
+    "",
+    "GEOLOGICAL OBSERVATIONS",
+    report.geology,
+    "",
+    "METHODS OR EQUIPMENT",
+    report.methods,
+    "",
+    "PRELIMINARY FINDINGS",
+    report.conclusion,
+    "",
+    "RECOMMENDATIONS",
+    report.recommendations,
+    "",
+    "Note: Preliminary observations are not laboratory confirmation."
+  ].join("\n");
+
+  const blob = new Blob([content], {type: "text/plain"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ViviGeoMiner-Field-Report-" + (index + 1) + ".txt";
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function deleteReport(index) {
+  if (!confirm("Are you sure you want to delete this report?")) return;
+  const reports = getReports();
+  reports.splice(index, 1);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+  displayReports();
+}
+
+displayReports();
+</script>
+
+</body>
+</html>
