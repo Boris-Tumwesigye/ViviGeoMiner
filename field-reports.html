@@ -177,10 +177,15 @@ function displayReports() {
       card.appendChild(paragraph);
     });
 
-    const downloadButton = document.createElement("button");
-    downloadButton.textContent = "Download Report";
+        const downloadButton = document.createElement("button");
+    downloadButton.textContent = "Download Report (TXT)";
     downloadButton.onclick = () => downloadReport(report, index);
     card.appendChild(downloadButton);
+
+    const pdfButton = document.createElement("button");
+    pdfButton.textContent = "Download Report (PDF)";
+    pdfButton.onclick = () => downloadPDF(report);
+    card.appendChild(pdfButton);
 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete Report";
