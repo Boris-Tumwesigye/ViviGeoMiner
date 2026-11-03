@@ -264,6 +264,18 @@
   <p>© 2026 ViviGeoMiner. All rights reserved.</p>
   <p>Discover. Identify. Explore.</p>
 </footer>
-
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js")
+      .then(function () {
+        console.log("ViviGeoMiner service worker registered.");
+      })
+      .catch(function (error) {
+        console.log("Service worker registration failed:", error);
+      });
+  });
+}
+</script>
 </body>
 </html>
