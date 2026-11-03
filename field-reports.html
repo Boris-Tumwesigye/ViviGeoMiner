@@ -178,9 +178,9 @@ function displayReports() {
     });
 
         const downloadButton = document.createElement("button");
-    downloadButton.textContent = "Download Report (TXT)";
-    downloadButton.onclick = () => downloadReport(report, index);
-    card.appendChild(downloadButton);
+downloadButton.textContent = "Download Report";
+downloadButton.onclick = () => downloadReport(report, index);
+card.appendChild(downloadButton);
 
     const pdfButton = document.createElement("button");
     pdfButton.textContent = "Download Report (PDF)";
