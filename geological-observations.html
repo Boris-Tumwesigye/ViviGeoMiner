@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123b65">
+<title>Geological Observations | ViviGeoMiner</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #172b4d;
+  line-height: 1.5;
+}
+
+header {
+  background: #123b65;
+  color: white;
+  padding: 24px 15px;
+  text-align: center;
+}
+
+main {
+  max-width: 700px;
+  margin: 25px auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px #00000012;
+}
+
+h2 { color: #087b63; }
+
+label {
+  display: block;
+  margin-top: 14px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 15px;
+  background: white;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #087b63;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.secondary { background: #123b65; }
+.danger { background: #b42318; }
+
+.status {
+  padding: 12px;
+  background: #edf4f8;
+  border-radius: 7px;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+.observation {
+  border: 1px solid #dbe3ec;
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.observation img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+.small {
+  color: #64748b;
+  font-size: 13px;
+}
+
+a { color: #087b63; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🌍 Geological Observations</h1>
+  <p>ViviGeoMiner | Geological Field Recording</p>
+</header>
+
+<main>
+
+<div class="card">
+  <h2>New Field Observation</h2>
+
+  <p>
+    Record geological features, suspected minerals and
+    their discovery locations.
+  </p>
+
+  <label for="siteName">Observation Site / Location Name</label>
+  <input id="siteName" type="text"
+    placeholder="e.g. Juba, Eastern Equatoria">
+
+  <label for="rockType">Rock or Suspected Mineral</label>
+  <select id="rockType">
+    <option value="">Select an option</option>
+    <option>Quartz</option>
+    <option>Gold-bearing rock (suspected)</option>
+    <option>Iron ore (suspected)</option>
+    <option>Magnetite (suspected)</option>
+    <option>Hematite (suspected)</option>
+    <option>Limestone</option>
+    <option>Granite</option>
+    <option>Sandstone</option>
+    <option>Other / Unknown</option>
+  </select>
+
+  <label for="colour">Rock Colour</label>
+  <input id="colour" type="text"
+    placeholder="e.g. reddish brown, black, white">
+
+  <label for="texture">Rock Texture</label>
+  <select id="texture">
+    <option value="">Select texture</option>
+    <option>Fine-grained</option>
+    <option>Coarse-grained</option>
+    <option>Crystalline</option>
+    <option>Glassy</option>
+    <option>Layered</option>
+    <option>Granular</option>
+    <option>Other / Unknown</option>
+  </select>
+
+  <label for="notes">Geological Field Notes</label>
+  <textarea id="notes"
+    placeholder="Describe the rock, surrounding geology and other observations..."></textarea>
+
+  <label for="photo">Rock Photograph</label>
+  <input id="photo" type="file" accept="image/*"
+    capture="environment">
+
+  <button type="button" id="gpsButton">
+    📍 Capture GPS Location
+  </button>
+
+  <div class="status" id="gpsStatus">
+    GPS location not captured yet.
+  </div>
+
+  <button type="button" id="saveButton">
+    Save Observation
+  </button>
+</div>
+
+<div class="card">
+  <h2>Saved Field Observations</h2>
+  <p class="small">
+    Records are saved in this browser on this device.
+  </p>
+
+  <div id="observationList">
+    No observations saved yet.
+  </div>
+
+  <button class="secondary" id="exportButton">
+    Export Observations as CSV
+  </button>
+</div>
+
+<p><a href="index.html">← Back to ViviGeoMiner Home</a></p>
+
+</main>
+
+<script>
+const siteName = document.getElementById("siteName");
+const rockType = document.getElementById("rockType");
+const colour = document.getElementById("colour");
+const texture = document.getElementById("texture");
+const notes = document.getElementById("notes");
+const photo = document.getElementById("photo");
+const gpsStatus = document.getElementById("gpsStatus");
+const observationList = document.getElementById("observationList");
+
+let gpsData = null;
+let photoData = "";
+let savedObservations = [];
+
+try {
+  savedObservations = JSON.parse(
+    localStorage.getItem("vivigeominerObservations") || "[]"
+  );
+
+  if (!Array.isArray(savedObservations)) {
+    savedObservations = [];
+  }
+} catch (error) {
+  savedObservations = [];
+}
+
+photo.addEventListener("change", () => {
+  const file = photo.files[0];
+
+  photoData = "";
+
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select an image file.");
+    photo.value = "";
+    return;
+  }
+
+  if (file.size > 1500000) {
+    alert("Please select an image smaller than 1.5 MB.");
+    photo.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    photoData = reader.result;
+  };
+
+  reader.onerror = () => {
+    alert("Unable to read photograph.");
+  };
+
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("gpsButton").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    gpsStatus.textContent =
+      "GPS location is not supported by this browser.";
+    return;
+  }
+
+  gpsStatus.textContent = "Acquiring GPS location...";
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      gpsData = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy
+      };
+
+      gpsStatus.textContent =
+        "Latitude: " + gpsData.latitude.toFixed(6) +
+        " | Longitude: " + gpsData.longitude.toFixed(6) +
+        " | Accuracy: ±" +
+        Math.round(gpsData.accuracy) + " metres";
+    },
+    error => {
+      gpsStatus.textContent =
+        "Location error: " + error.message;
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 20000,
+      maximumAge: 0
+    }
+  );
+});
+
+document.getElementById("saveButton").addEventListener("click", () => {
+  if (!siteName.value.trim()) {
+    alert("Please enter the observation location.");
+    return;
+  }
+
+  if (!rockType.value) {
+    alert("Please select a suspected rock or mineral.");
+    return;
+  }
+
+  if (!gpsData) {
+    alert("Please capture GPS location before saving.");
+    return;
+  }
+
+  const record = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    site: siteName.value.trim(),
+    rock: rockType.value,
+    colour: colour.value.trim(),
+    texture: texture.value,
+    notes: notes.value.trim(),
+    latitude: gpsData.latitude,
+    longitude: gpsData.longitude,
+    accuracy: gpsData.accuracy,
+    photo: photoData
+  };
+
+  savedObservations.unshift(record);
+
+  try {
+    localStorage.setItem(
+      "vivigeominerObservations",
+      JSON.stringify(savedObservations)
+    );
+  } catch (error) {
+    savedObservations.shift();
+    alert("Storage is full or unavailable. Try removing the photo or exporting your records.");
+    return;
+  }
+
+  siteName.value = "";
+  rockType.value = "";
+  colour.value = "";
+  texture.value = "";
+  notes.value = "";
+  photo.value = "";
+  photoData = "";
+  gpsData = null;
+  gpsStatus.textContent = "GPS location not captured yet.";
+
+  renderObservations();
+
+  alert("Geological observation saved successfully!");
+});
+
+function renderObservations() {
+  observationList.innerHTML = "";
+
+  if (!savedObservations.length) {
+    observationList.textContent = "No observations saved yet.";
+    return;
+  }
+
+  savedObservations.forEach(record => {
+    const item = document.createElement("div");
+    item.className = "observation";
+
+    const title = document.createElement("h3");
+    title.textContent = record.site;
+
+    const details = document.createElement("p");
+    details.textContent =
+      "Rock: " + record.rock +
+      " | Colour: " + (record.colour || "Not recorded") +
+      " | Texture: " + (record.texture || "Not recorded");
+
+    const coordinates = document.createElement("p");
+    coordinates.textContent =
+      "Latitude: " + record.latitude +
+      " | Longitude: " + record.longitude +
+      " | GPS accuracy: ±" + Math.round(record.accuracy) + " m";
+
+    const date = document.createElement("p");
+    date.className = "small";
+    date.textContent = new Date(record.date).toLocaleString();
+
+    item.append(title, details, coordinates, date);
+
+    if (record.notes) {
+      const note = document.createElement("p");
+      note.textContent = "Notes: " + record.notes;
+      item.appendChild(note);
+    }
+
+    if (record.photo) {
+      const image = document.createElement("img");
+      image.src = record.photo;
+      image.alt = "Field observation photograph";
+      item.appendChild(image);
+    }
+
+    observationList.appendChild(item);
+  });
+}
+
+document.getElementById("exportButton").addEventListener("click", () => {
+  if (!savedObservations.length) {
+    alert("There are no observations to export.");
+    return;
+  }
+
+  const headers = [
+    "Date", "Site", "Rock or Mineral", "Colour",
+    "Texture", "Notes", "Latitude", "Longitude", "GPS Accuracy"
+  ];
+
+  const rows = savedObservations.map(record => [
+    record.date,
+    record.site,
+    record.rock,
+    record.colour,
+    record.texture,
+    record.notes,
+    record.latitude,
+    record.longitude,
+    record.accuracy
+  ]);
+
+  const csv = [headers, ...rows].map(row =>
+    row.map(value =>
+      '"' + String(value ?? "").replace(/"/g, '""') + '"'
+    ).join(",")
+  ).join("\r\n");
+
+  const blob = new Blob(["\uFEFF" + csv], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "vivigeominer-observations.csv";
+  link.click();
+
+  URL.revokeObjectURL(url);
+});
+
+renderObservations();
+</script>
+
+</body>
+</html>
