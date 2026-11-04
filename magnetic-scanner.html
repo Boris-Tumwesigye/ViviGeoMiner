@@ -267,6 +267,82 @@ startButton.addEventListener("click", async () => {
 });
 
 stopButton.addEventListener("click", stopScanner);
+  
+// External Bluetooth Magnetometer Connection
+
+let bluetoothDevice = null;
+let bluetoothServer = null;
+
+const connectBluetooth =
+  document.getElementById("connectBluetooth");
+
+const disconnectBluetooth =
+  document.getElementById("disconnectBluetooth");
+
+const bluetoothStatus =
+  document.getElementById("bluetoothStatus");
+
+connectBluetooth.addEventListener("click", async () => {
+
+  if (!navigator.bluetooth) {
+    bluetoothStatus.textContent =
+      "Bluetooth Low Energy is not supported by this browser.";
+    return;
+  }
+
+  try {
+    bluetoothStatus.textContent =
+      "Searching for Bluetooth devices...";
+
+    bluetoothDevice =
+      await navigator.bluetooth.requestDevice({
+        acceptAllDevices: true
+      });
+
+    bluetoothDevice.addEventListener(
+      "gattserverdisconnected", () => {
+        bluetoothServer = null;
+        bluetoothStatus.textContent =
+          "External sensor disconnected.";
+
+        connectBluetooth.disabled = false;
+        disconnectBluetooth.disabled = true;
+      }
+    );
+
+    bluetoothStatus.textContent =
+      "Connecting to " + bluetoothDevice.name + "...";
+
+    bluetoothServer =
+      await bluetoothDevice.gatt.connect();
+
+    bluetoothStatus.textContent =
+      "Connected to " + bluetoothDevice.name +
+      ". Sensor service compatibility must now be checked.";
+
+    connectBluetooth.disabled = true;
+    disconnectBluetooth.disabled = false;
+
+  } catch (error) {
+    bluetoothStatus.textContent =
+      "Bluetooth connection failed: " + error.message;
+  }
+});
+
+disconnectBluetooth.addEventListener("click", () => {
+
+  if (bluetoothDevice && bluetoothDevice.gatt.connected) {
+    bluetoothDevice.gatt.disconnect();
+  }
+
+  bluetoothServer = null;
+  bluetoothStatus.textContent =
+    "External sensor disconnected.";
+
+  connectBluetooth.disabled = false;
+  disconnectBluetooth.disabled = true;
+});
+
 </script>
 
 </body>
