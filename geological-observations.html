@@ -193,6 +193,21 @@ a { color: #087b63; }
   <button class="secondary" id="exportButton">
     Export Observations as CSV
   </button>
+    <button class="secondary" id="importButton">
+    Import Observations from CSV
+  </button>
+
+  <input
+    type="file"
+    id="importFile"
+    accept=".csv,text/csv"
+    style="display:none;"
+  >
+
+  <p class="small">
+    Restore observations from a previously exported ViviGeoMiner CSV file.
+    Imported records will be added to your existing records.
+  </p>
 </div>
 
 <p><a href="index.html">← Back to ViviGeoMiner Home</a></p>
