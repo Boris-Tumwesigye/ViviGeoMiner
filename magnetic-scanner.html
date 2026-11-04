@@ -137,6 +137,33 @@ a { color: #087b63; }
 
   <p class="status" id="status">Waiting to start sensor.</p>
 </div>
+  
+<div class="card">
+  <h2>Bluetooth External Magnetometer</h2>
+  <p>
+    Connect a compatible external Bluetooth Low Energy
+    (BLE) magnetic sensor for professional field measurements.
+  </p>
+
+  <button id="connectBluetooth">
+    Connect External Sensor
+  </button>
+
+  <button id="disconnectBluetooth" disabled>
+    Disconnect Sensor
+  </button>
+
+  <p id="bluetoothStatus" class="status">
+    No external sensor connected.
+  </p>
+
+  <p>
+    <strong>Compatibility:</strong>
+    The sensor must support Bluetooth Low Energy (BLE)
+    and provide a compatible magnetic measurement service.
+  </p>
+</div>
+
 
 <div class="card">
   <h2>How it works</h2>
