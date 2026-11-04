@@ -2,185 +2,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#123b65">
-  <title>Magnetic Scanner | ViviGeoMiner</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      color: #172b4d;
-    }
-    header {
-      background: #123b65;
-      color: white;
-      padding: 22px 15px;
-      text-align: center;
-    }
-    main {
-      max-width: 650px;
-      margin: 25px auto;
-      padding: 15px;
-    }
-    .card {
-      background: white;
-      padding: 22px;
-      border-radius: 12px;
-      margin-bottom: 18px;
-      box-shadow: 0 2px 8px #00000012;
-    }
-    .reading {
-      font-size: 42px;
-      font-weight: bold;
-      color: #087b63;
-      text-align: center;
-      margin: 20px 0;
-    }
-    .unit {
-      font-size: 15px;
-      color: #64748b;
-      text-align: center;
-    }
-    button {
-      background: #087b63;
-      color: white;
-      border: 0;
-      border-radius: 8px;
-      padding: 14px 20px;
-      font-size: 16px;
-      width: 100%;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:disabled { opacity: .6; }
-    .status { text-align: center; margin-top: 12px; }
-    .warning {
-      background: #fff7df;
-      padding: 14px;
-      border-left: 4px solid #e5a000;
-      border-radius: 5px;
-      line-height: 1.5;
-    }
-    a { color: #087b63; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123b65">
+<title>Magnetic Scanner | ViviGeoMiner</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #172b4d;
+}
+
+header {
+  background: #123b65;
+  color: white;
+  text-align: center;
+  padding: 24px 15px;
+}
+
+main {
+  max-width: 650px;
+  margin: 25px auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px #00000012;
+}
+
+.reading {
+  text-align: center;
+  font-size: 38px;
+  font-weight: bold;
+  color: #087b63;
+  margin: 20px 0;
+}
+
+.unit {
+  text-align: center;
+  color: #64748b;
+}
+
+.values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.value {
+  background: #edf4f8;
+  padding: 12px 5px;
+  border-radius: 8px;
+}
+
+.value strong {
+  display: block;
+  font-size: 20px;
+  color: #123b65;
+  margin-top: 6px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #087b63;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+#stopButton {
+  background: #64748b;
+}
+
+.status {
+  text-align: center;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.warning {
+  background: #fff7df;
+  padding: 14px;
+  border-left: 4px solid #e5a000;
+  border-radius: 5px;
+  line-height: 1.5;
+}
+
+a { color: #087b63; }
+</style>
 </head>
+
 <body>
+
 <header>
-  <h1>🧭 Magnetic Scanner</h1>
-  <p>ViviGeoMiner | Field Exploration Tools</p>
+  <h1>🧲 Magnetic Scanner</h1>
+  <p>ViviGeoMiner | Real Sensor Measurements</p>
 </header>
 
 <main>
-  <div class="card">
-    <h2>Magnetic Field Measurement</h2>
-    <p>
-      Use your phone's built-in magnetometer, if available,
-      to observe changes in the surrounding magnetic field.
-    </p>
 
-    <div class="reading" id="reading">--</div>
-    <div class="unit">Microtesla (µT)</div>
+<div class="card">
+  <h2>Magnetic Field Strength</h2>
+  <p>Measure the magnetic field surrounding your phone using its built-in magnetometer.</p>
 
-    <button id="startButton">Start Magnetic Scanner</button>
-    <button id="stopButton" disabled>Stop Scanner</button>
+  <div class="reading" id="total">--</div>
+  <div class="unit">Total magnetic field (µT)</div>
 
-    <p class="status" id="status">
-      Scanner is waiting to start.
-    </p>
+  <div class="values">
+    <div class="value">X<strong id="x">--</strong><small>µT</small></div>
+    <div class="value">Y<strong id="y">--</strong><small>µT</small></div>
+    <div class="value">Z<strong id="z">--</strong><small>µT</small></div>
   </div>
 
-  <div class="card">
-    <h2>Understanding Your Readings</h2>
-    <p>
-      The magnetometer measures the magnetic field around
-      your phone. Readings can change due to nearby metal,
-      electrical equipment, magnets and natural geological
-      variations.
-    </p>
-    <p>
-      Move your phone slowly and compare readings at
-      different locations, keeping its orientation consistent.
-    </p>
-  </div>
+  <button id="startButton">Start Scanner</button>
+  <button id="stopButton" disabled>Stop Scanner</button>
 
-  <div class="card">
-    <h2>Important Scientific Notice</h2>
-    <div class="warning">
-      Magnetic readings do not identify minerals or prove
-      the presence of an ore deposit. A phone magnetometer
-      is a demonstration and preliminary observation tool.
-      Professional geological surveys and laboratory
-      analysis are needed to evaluate mineral deposits.
-    </div>
-  </div>
+  <p class="status" id="status">Waiting to start sensor.</p>
+</div>
 
-  <p><a href="index.html">← Back to ViviGeoMiner Home</a></p>
+<div class="card">
+  <h2>How it works</h2>
+  <p>
+    The magnetometer measures magnetic field components
+    along three axes. The total field strength is calculated
+    using:
+  </p>
+  <p><strong>√(X² + Y² + Z²)</strong></p>
+  <p>Measurements are displayed in microtesla (µT).</p>
+</div>
+
+<div class="card">
+  <h2>Scientific limitations</h2>
+  <div class="warning">
+    Magnetic anomalies may have several geological or
+    artificial causes. Nearby metal, electronic devices,
+    phone orientation and calibration can affect readings.
+    This tool cannot identify minerals or confirm an ore
+    deposit. Professional geological surveys are required.
+  </div>
+</div>
+
+<p><a href="index.html">← Back to ViviGeoMiner</a></p>
+
 </main>
 
 <script>
-const reading = document.getElementById("reading");
-const statusText = document.getElementById("status");
+let sensor = null;
+
+const total = document.getElementById("total");
+const xDisplay = document.getElementById("x");
+const yDisplay = document.getElementById("y");
+const zDisplay = document.getElementById("z");
+const status = document.getElementById("status");
 const startButton = document.getElementById("startButton");
 const stopButton = document.getElementById("stopButton");
 
-let active = false;
-
 function stopScanner() {
-  active = false;
-  window.removeEventListener("deviceorientation", measure);
-  reading.textContent = "--";
-  statusText.textContent = "Scanner stopped.";
+  if (sensor) {
+    sensor.stop();
+    sensor = null;
+  }
+
   startButton.disabled = false;
   stopButton.disabled = true;
-}
-
-function measure(event) {
-  if (!active) return;
-
-  const x = event.alpha;
-  const y = event.beta;
-  const z = event.gamma;
-
-  if (x === null || y === null || z === null) return;
-
-  // Orientation angles are NOT magnetic field measurements.
-  statusText.textContent =
-    "Orientation sensor detected. This device does not expose magnetic field strength through this event.";
+  status.textContent = "Scanner stopped.";
 }
 
 startButton.addEventListener("click", async () => {
-  if (!("DeviceOrientationEvent" in window)) {
-    statusText.textContent =
-      "Orientation sensor is not supported by this browser.";
+  if (!window.isSecureContext) {
+    status.textContent = "Secure HTTPS connection required.";
     return;
   }
 
-  if (typeof DeviceOrientationEvent.requestPermission === "function") {
-    try {
-      const permission = await DeviceOrientationEvent.requestPermission();
-      if (permission !== "granted") {
-        statusText.textContent = "Sensor permission was not granted.";
-        return;
-      }
-    } catch (error) {
-      statusText.textContent = "Could not access sensor permission.";
-      return;
-    }
+  if (!("Magnetometer" in window)) {
+    status.textContent =
+      "Magnetometer API is not supported by this browser or device. No readings are available.";
+    return;
   }
 
-  active = true;
-  startButton.disabled = true;
-  stopButton.disabled = false;
-  statusText.textContent =
-    "Checking device sensors. A true magnetic field reading requires a supported magnetometer API.";
+  try {
+    sensor = new Magnetometer({
+      frequency: 10
+    });
 
-  window.addEventListener("deviceorientation", measure);
+    sensor.addEventListener("reading", () => {
+      const x = sensor.x;
+      const y = sensor.y;
+      const z = sensor.z;
+
+      const magnitude = Math.sqrt(
+        x * x + y * y + z * z
+      );
+
+      xDisplay.textContent = x.toFixed(2);
+      yDisplay.textContent = y.toFixed(2);
+      zDisplay.textContent = z.toFixed(2);
+      total.textContent = magnitude.toFixed(2);
+
+      status.textContent = "Live magnetic measurements active.";
+    });
+
+    sensor.addEventListener("error", (event) => {
+      status.textContent =
+        "Sensor error: " + event.error.message;
+      stopScanner();
+    });
+
+    sensor.start();
+
+    startButton.disabled = true;
+    stopButton.disabled = false;
+    status.textContent = "Starting magnetometer...";
+
+  } catch (error) {
+    status.textContent =
+      "Unable to start sensor: " + error.message;
+    stopScanner();
+  }
 });
 
 stopButton.addEventListener("click", stopScanner);
 </script>
+
 </body>
 </html>
+
