@@ -260,6 +260,37 @@ const temperature = document.getElementById("temperature");
 const waterPhotoPreview = document.getElementById("waterPhotoPreview");
 
 let waterPhotoData = "";
+ waterPhoto.addEventListener("change", () => {
+  const file = waterPhoto.files[0];
+
+  if (!file) {
+    waterPhotoData = "";
+    waterPhotoPreview.style.display = "none";
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select an image file.");
+    waterPhoto.value = "";
+    return;
+  }
+
+  if (file.size > 1.5 * 1024 * 1024) {
+    alert("Please choose an image smaller than 1.5 MB.");
+    waterPhoto.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    waterPhotoData = reader.result;
+    waterPhotoPreview.src = waterPhotoData;
+    waterPhotoPreview.style.display = "block";
+  };
+
+  reader.readAsDataURL(file);
+});
 const notes = document.getElementById("notes");
 const gpsStatus = document.getElementById("gpsStatus");
 const recordList = document.getElementById("recordList");
