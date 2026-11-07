@@ -160,6 +160,31 @@ a { color: #087b8a; }
     <option>Other</option>
     <option>Not observed</option>
   </select>
+    <h3>Water Quality Measurements</h3>
+  <p class="small">
+    Enter readings obtained using appropriate water-testing instruments.
+    Leave blank if not measured.
+  </p>
+
+  <label for="ph">pH Level</label>
+  <input type="number" id="ph" min="0" max="14"
+         step="0.01" placeholder="e.g. 7.2">
+
+  <label for="ec">Electrical Conductivity (µS/cm)</label>
+  <input type="number" id="ec" min="0"
+         step="0.1" placeholder="e.g. 450">
+
+  <label for="tds">Total Dissolved Solids (mg/L)</label>
+  <input type="number" id="tds" min="0"
+         step="0.1" placeholder="e.g. 300">
+
+  <label for="turbidity">Turbidity (NTU)</label>
+  <input type="number" id="turbidity" min="0"
+         step="0.1" placeholder="e.g. 2.5">
+
+  <label for="temperature">Water Temperature (°C)</label>
+  <input type="number" id="temperature"
+         step="0.1" placeholder="e.g. 25.5">
 
   <label for="notes">Field Notes</label>
   <textarea id="notes"
