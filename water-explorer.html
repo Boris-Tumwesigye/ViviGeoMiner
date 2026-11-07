@@ -486,10 +486,12 @@ document.getElementById("exportButton").addEventListener("click", () => {
   }
 
   const headers = [
-    "Date", "Name", "Source Type", "Condition",
-    "Depth (m)", "Water Level (m)", "Appearance",
-    "Notes", "Latitude", "Longitude", "GPS Accuracy"
-  ];
+  "Date", "Name", "Source Type", "Condition",
+  "Depth (m)", "Water Level (m)", "Appearance",
+  "pH", "EC (µS/cm)", "TDS (mg/L)",
+  "Turbidity (NTU)", "Temperature (°C)",
+  "Notes", "Latitude", "Longitude", "GPS Accuracy"
+];
 
   const rows = waterRecords.map(record => [
     record.date,
