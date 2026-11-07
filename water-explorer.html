@@ -283,11 +283,45 @@ let waterPhotoData = "";
 
   const reader = new FileReader();
 
-  reader.onload = () => {
-    waterPhotoData = reader.result;
-    waterPhotoPreview.src = waterPhotoData;
-    waterPhotoPreview.style.display = "block";
-  };
+  reader.onload = async () => {
+  try {
+    const bitmap = await createImageBitmap(file);
+
+    const maxSize = 1200;
+    const scale = Math.min(
+      1,
+      maxSize / Math.max(bitmap.width, bitmap.height)
+    );
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+
+    const context = canvas.getContext("2d");
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        alert("Photo compression failed. Please try another photo.");
+        return;
+      }
+
+      const compressedReader = new FileReader();
+
+      compressedReader.onload = () => {
+        waterPhotoData = compressedReader.result;
+        waterPhotoPreview.src = waterPhotoData;
+        waterPhotoPreview.style.display = "block";
+      };
+
+      compressedReader.readAsDataURL(blob);
+    }, "image/jpeg", 0.72);
+
+  } catch (error) {
+    alert("Unable to process this photograph. Please try another one.");
+  }
+};
 
   reader.readAsDataURL(file);
 });
