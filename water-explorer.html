@@ -189,6 +189,24 @@ a { color: #087b8a; }
   <label for="notes">Field Notes</label>
   <textarea id="notes"
     placeholder="Describe the water source, surrounding geology and observations..."></textarea>
+   <label for="waterPhoto">Water Source Photograph</label>
+  <input
+    type="file"
+    id="waterPhoto"
+    accept="image/*"
+    capture="environment"
+  >
+
+  <p class="small">
+    Take a photograph or choose one from your device.
+    Maximum image size: 1.5 MB.
+  </p>
+
+  <img
+    id="waterPhotoPreview"
+    alt="Water source preview"
+    style="display:none; width:100%; max-height:250px; object-fit:cover; border-radius:10px;"
+  >
 
   <button type="button" id="gpsButton">
     📍 Capture GPS Coordinates
