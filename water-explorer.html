@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123b65">
+<title>Water Explorer | ViviGeoMiner</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #172b4d;
+  line-height: 1.5;
+}
+
+header {
+  background: #123b65;
+  color: white;
+  padding: 25px 15px;
+  text-align: center;
+}
+
+main {
+  max-width: 700px;
+  margin: 25px auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px #00000012;
+}
+
+h2 { color: #087b8a; }
+
+label {
+  display: block;
+  margin-top: 14px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 15px;
+  background: white;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #087b8a;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.secondary { background: #123b65; }
+
+.status {
+  padding: 12px;
+  background: #edf4f8;
+  border-radius: 7px;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+.record {
+  border: 1px solid #dbe3ec;
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.small {
+  color: #64748b;
+  font-size: 13px;
+}
+
+a { color: #087b8a; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>💧 Water Explorer</h1>
+  <p>ViviGeoMiner | Groundwater and Water-Point Mapping</p>
+</header>
+
+<main>
+
+<div class="card">
+  <h2>Record a Water Point</h2>
+
+  <p>
+    Record existing water sources and field observations.
+    GPS coordinates help map their locations.
+  </p>
+
+  <label for="sourceName">Water Point Name / Location</label>
+  <input id="sourceName" type="text"
+    placeholder="e.g. Community borehole">
+
+  <label for="sourceType">Water Source Type</label>
+  <select id="sourceType">
+    <option value="">Select source type</option>
+    <option>Borehole</option>
+    <option>Hand-dug well</option>
+    <option>Spring</option>
+    <option>River</option>
+    <option>Lake</option>
+    <option>Stream</option>
+    <option>Other</option>
+  </select>
+
+  <label for="condition">Water Point Condition</label>
+  <select id="condition">
+    <option value="">Select condition</option>
+    <option>Functional</option>
+    <option>Not functional</option>
+    <option>Seasonal</option>
+    <option>Unknown</option>
+  </select>
+
+  <label for="depth">Borehole / Well Depth (metres, if known)</label>
+  <input id="depth" type="number" min="0" step="0.1"
+    placeholder="Leave blank if unknown">
+
+  <label for="waterLevel">Water Level (metres, if measured)</label>
+  <input id="waterLevel" type="number" min="0" step="0.1"
+    placeholder="Leave blank if not measured">
+
+  <label for="quality">Observed Water Appearance</label>
+  <select id="quality">
+    <option value="">Select observation</option>
+    <option>Clear</option>
+    <option>Cloudy</option>
+    <option>Brownish</option>
+    <option>Other</option>
+    <option>Not observed</option>
+  </select>
+
+  <label for="notes">Field Notes</label>
+  <textarea id="notes"
+    placeholder="Describe the water source, surrounding geology and observations..."></textarea>
+
+  <button type="button" id="gpsButton">
+    📍 Capture GPS Coordinates
+  </button>
+
+  <div class="status" id="gpsStatus">
+    GPS location not captured yet.
+  </div>
+
+  <button type="button" id="saveButton">
+    Save Water Point
+  </button>
+</div>
+
+<div class="card">
+  <h2>Saved Water Points</h2>
+
+  <p class="small">
+    Records are stored locally in this browser on this device.
+  </p>
+
+  <div id="recordList">No water points recorded yet.</div>
+
+  <button class="secondary" id="exportButton">
+    Export Water Records as CSV
+  </button>
+</div>
+
+<p><a href="index.html">← Back to ViviGeoMiner Home</a></p>
+
+</main>
+
+<script>
+const sourceName = document.getElementById("sourceName");
+const sourceType = document.getElementById("sourceType");
+const condition = document.getElementById("condition");
+const depth = document.getElementById("depth");
+const waterLevel = document.getElementById("waterLevel");
+const quality = document.getElementById("quality");
+const notes = document.getElementById("notes");
+const gpsStatus = document.getElementById("gpsStatus");
+const recordList = document.getElementById("recordList");
+
+let gpsData = null;
+let waterRecords = [];
+
+try {
+  waterRecords = JSON.parse(
+    localStorage.getItem("vivigeominerWaterPoints") || "[]"
+  );
+
+  if (!Array.isArray(waterRecords)) waterRecords = [];
+} catch (error) {
+  waterRecords = [];
+}
+
+document.getElementById("gpsButton").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    gpsStatus.textContent = "GPS is not supported by this browser.";
+    return;
+  }
+
+  gpsStatus.textContent = "Acquiring GPS coordinates...";
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      gpsData = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy
+      };
+
+      gpsStatus.textContent =
+        "Latitude: " + gpsData.latitude.toFixed(6) +
+        " | Longitude: " + gpsData.longitude.toFixed(6) +
+        " | Accuracy: ±" + Math.round(gpsData.accuracy) + " metres";
+    },
+    error => {
+      gpsStatus.textContent = "Location error: " + error.message;
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 20000,
+      maximumAge: 0
+    }
+  );
+});
+
+document.getElementById("saveButton").addEventListener("click", () => {
+  if (!sourceName.value.trim()) {
+    alert("Please enter the water point name or location.");
+    return;
+  }
+
+  if (!sourceType.value) {
+    alert("Please select a water source type.");
+    return;
+  }
+
+  if (!gpsData) {
+    alert("Please capture GPS coordinates before saving.");
+    return;
+  }
+
+  const depthValue = depth.value === "" ? null : Number(depth.value);
+  const levelValue = waterLevel.value === "" ? null : Number(waterLevel.value);
+
+  if (
+    (depthValue !== null && (!Number.isFinite(depthValue) || depthValue < 0)) ||
+    (levelValue !== null && (!Number.isFinite(levelValue) || levelValue < 0))
+  ) {
+    alert("Depth and water level must be valid non-negative numbers.");
+    return;
+  }
+
+  const record = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    name: sourceName.value.trim(),
+    type: sourceType.value,
+    condition: condition.value,
+    depth: depthValue,
+    waterLevel: levelValue,
+    quality: quality.value,
+    notes: notes.value.trim(),
+    latitude: gpsData.latitude,
+    longitude: gpsData.longitude,
+    accuracy: gpsData.accuracy
+  };
+
+  waterRecords.unshift(record);
+
+  try {
+    localStorage.setItem(
+      "vivigeominerWaterPoints",
+      JSON.stringify(waterRecords)
+    );
+  } catch (error) {
+    waterRecords.shift();
+    alert("Browser storage is full or unavailable. Export your records.");
+    return;
+  }
+
+  sourceName.value = "";
+  sourceType.value = "";
+  condition.value = "";
+  depth.value = "";
+  waterLevel.value = "";
+  quality.value = "";
+  notes.value = "";
+  gpsData = null;
+  gpsStatus.textContent = "GPS location not captured yet.";
+
+  renderRecords();
+  alert("Water point saved successfully!");
+});
+
+function renderRecords() {
+  recordList.innerHTML = "";
+
+  if (!waterRecords.length) {
+    recordList.textContent = "No water points recorded yet.";
+    return;
+  }
+
+  waterRecords.forEach(record => {
+    const item = document.createElement("div");
+    item.className = "record";
+
+    const title = document.createElement("h3");
+    title.textContent = record.name;
+
+    const details = document.createElement("p");
+    details.textContent =
+      "Type: " + record.type +
+      " | Condition: " + (record.condition || "Not recorded");
+
+    const measurements = document.createElement("p");
+    measurements.textContent =
+      "Depth: " + (record.depth ?? "Unknown") +
+      " m | Water level: " + (record.waterLevel ?? "Unknown") + " m";
+
+    const coordinates = document.createElement("p");
+    coordinates.textContent =
+      "Latitude: " + record.latitude +
+      " | Longitude: " + record.longitude +
+      " | Accuracy: ±" + Math.round(record.accuracy) + " m";
+
+    const date = document.createElement("p");
+    date.className = "small";
+    date.textContent = new Date(record.date).toLocaleString();
+
+    item.append(title, details, measurements, coordinates, date);
+
+    if (record.quality || record.notes) {
+      const extra = document.createElement("p");
+      extra.textContent =
+        "Appearance: " + (record.quality || "Not recorded") +
+        " | Notes: " + (record.notes || "None");
+      item.appendChild(extra);
+    }
+
+    recordList.appendChild(item);
+  });
+}
+
+document.getElementById("exportButton").addEventListener("click", () => {
+  if (!waterRecords.length) {
+    alert("There are no water records to export.");
+    return;
+  }
+
+  const headers = [
+    "Date", "Name", "Source Type", "Condition",
+    "Depth (m)", "Water Level (m)", "Appearance",
+    "Notes", "Latitude", "Longitude", "GPS Accuracy"
+  ];
+
+  const rows = waterRecords.map(record => [
+    record.date,
+    record.name,
+    record.type,
+    record.condition,
+    record.depth,
+    record.waterLevel,
+    record.quality,
+    record.notes,
+    record.latitude,
+    record.longitude,
+    record.accuracy
+  ]);
+
+  const csv = [headers, ...rows].map(row =>
+    row.map(value =>
+      '"' + String(value ?? "").replace(/"/g, '""') + '"'
+    ).join(",")
+  ).join("\r\n");
+
+  const blob = new Blob(["\uFEFF" + csv], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "vivigeominer-water-records.csv";
+  link.click();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+renderRecords();
+</script>
+
+</body>
+</html>
