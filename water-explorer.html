@@ -1,4 +1,4 @@
-
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -305,6 +305,20 @@ document.getElementById("saveButton").addEventListener("click", () => {
 
   const depthValue = depth.value === "" ? null : Number(depth.value);
   const levelValue = waterLevel.value === "" ? null : Number(waterLevel.value);
+  const phValue = ph.value === "" ? null : Number(ph.value);
+const ecValue = ec.value === "" ? null : Number(ec.value);
+const tdsValue = tds.value === "" ? null : Number(tds.value);
+const turbidityValue = turbidity.value === "" ? null : Number(turbidity.value);
+const temperatureValue = temperature.value === "" ? null : Number(temperature.value);
+
+if (
+  (phValue !== null && (!Number.isFinite(phValue) || phValue < 0 || phValue > 14)) ||
+  [ecValue, tdsValue, turbidityValue].some(v => v !== null && (!Number.isFinite(v) || v < 0)) ||
+  (temperatureValue !== null && !Number.isFinite(temperatureValue))
+) {
+  alert("Please enter valid water-quality measurements. pH must be between 0 and 14; EC, TDS and turbidity cannot be negative.");
+  return;
+}
 
   if (
     (depthValue !== null && (!Number.isFinite(depthValue) || depthValue < 0)) ||
