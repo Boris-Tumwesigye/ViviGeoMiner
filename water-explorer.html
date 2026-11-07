@@ -463,6 +463,15 @@ function renderRecords() {
         " | Notes: " + (record.notes || "None");
       item.appendChild(extra);
     }
+    const measurements = document.createElement("p");
+measurements.textContent =
+  "pH: " + (record.ph ?? "Not measured") +
+  " | EC: " + (record.ec ?? "Not measured") + " µS/cm" +
+  " | TDS: " + (record.tds ?? "Not measured") + " mg/L" +
+  " | Turbidity: " + (record.turbidity ?? "Not measured") + " NTU" +
+  " | Temperature: " + (record.temperature ?? "Not measured") + " °C";
+
+item.appendChild(measurements);
 
     recordList.appendChild(item);
   });
