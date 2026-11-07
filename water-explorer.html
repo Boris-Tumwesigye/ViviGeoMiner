@@ -477,7 +477,7 @@ function renderRecords() {
         " | Notes: " + (record.notes || "None");
       item.appendChild(extra);
     }
-    const measurements = document.createElement("p");
+    const qualityMeasurements = document.createElement("p");
 measurements.textContent =
   "pH: " + (record.ph ?? "Not measured") +
   " | EC: " + (record.ec ?? "Not measured") + " µS/cm" +
