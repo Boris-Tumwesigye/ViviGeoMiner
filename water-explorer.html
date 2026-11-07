@@ -323,7 +323,12 @@ document.getElementById("saveButton").addEventListener("click", () => {
     depth: depthValue,
     waterLevel: levelValue,
     quality: quality.value,
-    notes: notes.value.trim(),
+ph: ph.value === "" ? null : Number(ph.value),
+ec: ec.value === "" ? null : Number(ec.value),
+tds: tds.value === "" ? null : Number(tds.value),
+turbidity: turbidity.value === "" ? null : Number(turbidity.value),
+temperature: temperature.value === "" ? null : Number(temperature.value),
+notes: notes.value.trim(),
     latitude: gpsData.latitude,
     longitude: gpsData.longitude,
     accuracy: gpsData.accuracy
