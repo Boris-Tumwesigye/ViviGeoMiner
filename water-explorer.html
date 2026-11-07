@@ -325,6 +325,58 @@ document.getElementById("saveButton").addEventListener("click", () => {
   renderRecords();
   alert("Water point saved successfully!");
 });
+  let waterMap = null;
+let waterMarkers = null;
+
+function renderWaterMap() {
+  const mapElement = document.getElementById("waterMap");
+
+  if (!mapElement || typeof L === "undefined") {
+    return;
+  }
+
+  if (!waterMap) {
+    waterMap = L.map("waterMap").setView([0, 32], 5);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(waterMap);
+
+    waterMarkers = L.layerGroup().addTo(waterMap);
+  }
+
+  waterMarkers.clearLayers();
+
+  const validRecords = waterRecords.filter(record =>
+    Number.isFinite(Number(record.latitude)) &&
+    Number.isFinite(Number(record.longitude)) &&
+    Number(record.latitude) >= -90 &&
+    Number(record.latitude) <= 90 &&
+    Number(record.longitude) >= -180 &&
+    Number(record.longitude) <= 180
+  );
+
+  validRecords.forEach(record => {
+    L.marker([
+      Number(record.latitude),
+      Number(record.longitude)
+    ])
+    .bindPopup(
+      "<strong>" + String(record.name) + "</strong><br>" +
+      "Type: " + String(record.type) + "<br>" +
+      "Condition: " + String(record.condition || "Unknown")
+    )
+    .addTo(waterMarkers);
+  });
+
+  if (validRecords.length > 0) {
+    const bounds = waterMarkers.getBounds();
+    waterMap.fitBounds(bounds, { padding: [25, 25], maxZoom: 14 });
+  }
+
+  setTimeout(() => waterMap.invalidateSize(), 200);
+}
 
 function renderRecords() {
   recordList.innerHTML = "";
