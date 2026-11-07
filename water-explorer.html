@@ -384,6 +384,7 @@ function renderRecords() {
   if (!waterRecords.length) {
     recordList.textContent = "No water points recorded yet.";
     return;
+    renderWaterMap();
   }
 
   waterRecords.forEach(record => {
